@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>Responsive Test</title>
+	<style>
+		html, body {
+			margin: 0; padding: 1em;
+		}
+		
+		body {
+			font-family: arial sans-serif;
+			font-size: 15px;
+			color: #444;
+		}
+		
+		h1 {font-size: 2.5em; margin-bottom: 0;}
+		h2 {font-size: 1.5em; margin-top: 0.1em; color: #888;}
+		
+		p.button {
+			max-width: 5em;
+			padding: 0.5em;
+			background: rgb(40,170,240);
+			color: #fff;
+			border-radius: 5px;
+			font-weight: bold;
+			text-align: center;
+			cursor: pointer;
+		}
+		
+		small {color: #666;}
+		
+		
+		section {
+			margin: 0 2em 0 0;
+			padding: 0 0 2em 0;
+			border-bottom: 3px solid #777;
+		}
+		
+		div {
+			margin:0;
+			padding: 0.75em;
+			background: #d9d9d9;
+		}
+		
+		th,
+		td {padding: 5px; text-align: left;}
+		
+		td.true {background: #b8ef82;}
+		td.false {background: #3a6379; color: #fff;}
+		
+		tr:nth-child(odd) th {
+			background: #e7e7e7;
+		}
+		
+		tr.break td {
+			padding: 2px;
+			background: #444;
+		}
+	</style>
+</head>
+<body>
+	
+	
+	<section id="result">
+		<h1>Media Query Results</h1>
+		<h2>Tested with JavaScript &amp; the window.matchMedia object</h2>
+		
+		<p class='button' onclick='mqTester.run();'>Retest</p>
+		<small>(Retest after changing orientation)</small>
+		
+	</section>
+	
+	<p><small>edit the <em>testQueries</em> JS variable to define your Media Queries</small></p>
+	
+	<script type="text/javascript">
+	
+	/* Define your test Media Queries here as strings
+	*  Do not wrap in parenthesis
+	*  use '-' to add a visual break in the result table
+	*/
+	var testQueries = [
+		'min-width:480px',
+		'min-width:800px',
+		'min-device-width:960px',
+		'-',
+		'max-width: 640px',
+		'max-width: 800px',
+		'max-width: 1024px',
+		'max-device-width: 800px',
+		'max-device-width: 1024px',
+		'max-width: 2000px',
+		'-',
+		'min-resolution: 1dppx',
+		'min-resolution: 1.5dppx',
+		'min-resolution: 2dppx',
+		'-webkit-min-device-pixel-ratio: 2'
+	];
+	
+	
+	// ---------------------
+	
+	
+	var mqTester = {
+		
+		run: function() {
+			
+			var tests = testQueries;
+			var resultTbl; //DOM element
+			
+			var oldTable = document.getElementById('resultTable');
+			if (oldTable) {
+				oldTable.parentNode.removeChild(oldTable);
+			}
+			
+			resultTbl = document.createElement('table');
+			resultTbl.id = 'resultTable';
+			
+			for(i in tests) {
+				var li = document.createElement('li');
+				
+				//Division Row for readability
+				if (tests[i] == '-') {
+					var tr = document.createElement('tr');
+					var td = document.createElement('td');
+					tr.className = 'break';
+					td.colSpan=2;
+					tr.appendChild(td);
+					resultTbl.appendChild(tr);
+				}
+				
+				
+				//Test & Report
+				else {
+					var mqResult = window.matchMedia( '(' + tests[i] + ')');
+					
+					li.innerHTML = tests[i] + ' = ' + mqResult.matches;
+					
+					//Table
+					var tr = document.createElement('tr');
+					var th = document.createElement('th');
+					var td = document.createElement('td');
+					
+					th.scope='row';
+					th.innerHTML = tests[i];
+					td.innerHTML = mqResult.matches;
+					td.className = (mqResult.matches) ? 'true' : 'false';
+					
+					tr.appendChild(th);
+					tr.appendChild(td);
+					
+					resultTbl.appendChild(tr);
+				}
+			}
+			
+			document.getElementById('result').appendChild(resultTbl);
+		}
+	};
+	
+	mqTester.run();
+	</script>
+</body>
+</html>
